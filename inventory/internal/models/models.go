@@ -30,3 +30,10 @@ type Product struct {
 	CreatedAt     time.Time    `json:"created_at"`
 	UpdatedAt     time.Time    `json:"updated_at"`
 }
+
+type ProductsFilter struct {
+	Uuids                 []string   `json:"uuids,omitempty"`
+	Names                 []string   `json:"names,omitempty"`
+	Categories            []Category `json:"categories,omitempty"`
+	ManufacturerCountries []string   `json:"manufacturer_countries,omitempty"`
+}

@@ -22,23 +22,7 @@ func NewProductsRepo() *ProductsRepo {
 	}
 }
 
-func (r *ProductsRepo) Create(ctx context.Context, product *models.Product) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if product == nil {
-		return repo.ErrProductNotFound
-	}
-
-	if _, exists := r.products[product.Uuid]; exists {
-		return repo.ErrProductAlreadyExists
-	}
-	r.products[product.Uuid] = product
-
-	return nil
-}
-
-func (r *ProductsRepo) Read(ctx context.Context, productID string) (*models.Product, error) {
+func (r *ProductsRepo) GetProduct(ctx context.Context, productID string) (*models.Product, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -50,42 +34,54 @@ func (r *ProductsRepo) Read(ctx context.Context, productID string) (*models.Prod
 	return product, nil
 }
 
-func (r *ProductsRepo) Upsert(ctx context.Context, products []*models.Product) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	for _, p := range products {
-		if p == nil {
-			continue
-		}
-		r.products[p.Uuid] = p
-	}
-
-	return nil
-}
-
-func (r *ProductsRepo) List(ctx context.Context) ([]*models.Product, error) {
+func (r *ProductsRepo) ListProducts(ctx context.Context, filter models.ProductsFilter) ([]*models.Product, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	out := make([]*models.Product, 0, len(r.products))
-	for _, p := range r.products {
-		out = append(out, p)
+	res := make([]*models.Product, 0)
+	for _, product := range r.products {
+		if matchesFilter(product, filter) {
+			res = append(res, product)
+		}
 	}
 
-	return out, nil
+	return res, nil
 }
 
-func (r *ProductsRepo) Delete(ctx context.Context, productID string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	_, ok := r.products[productID]
-	if !ok {
-		return repo.ErrProductNotFound
+func matchesFilter(product *models.Product, filter models.ProductsFilter) bool {
+	if len(filter.Uuids) > 0 && !contains(filter.Uuids, product.Uuid) {
+		return false
 	}
 
-	delete(r.products, productID)
-	return nil
+	if len(filter.Names) > 0 && !contains(filter.Names, product.Name) {
+		return false
+	}
 
+	if len(filter.Categories) > 0 && !containsCategory(filter.Categories, product.Category) {
+		return false
+	}
+
+	if len(filter.ManufacturerCountries) > 0 && !contains(filter.ManufacturerCountries, product.Manufacturer.Country) {
+		return false
+	}
+
+	return true
+}
+
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
+}
+
+func containsCategory(slice []models.Category, item models.Category) bool {
+	for _, c := range slice {
+		if c == item {
+			return true
+		}
+	}
+	return false
 }

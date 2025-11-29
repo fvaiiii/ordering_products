@@ -8,14 +8,11 @@ import (
 )
 
 var (
-	ErrProductNotFound = errors.New("product not found")
+	ErrProductNotFound      = errors.New("product not found")
 	ErrProductAlreadyExists = errors.New("product already exists")
 )
 
 type Products interface {
-	Create(ctx context.Context, product *models.Product) error
-	Read(ctx context.Context, productID string) (*models.Product, error)
-	Upsert(ctx context.Context, products []*models.Product) error
-	List(ctx context.Context) ([]*models.Product, error)
-	Delete(ctx context.Context, productID string) error
+	GetProduct(ctx context.Context, productID string) (*models.Product, error)
+	ListProducts(ctx context.Context, filter models.ProductsFilter) ([]*models.Product, error)
 }
