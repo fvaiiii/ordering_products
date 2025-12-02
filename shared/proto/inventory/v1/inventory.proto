@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package inventory.v1;
+
+option go_package = "github.com/fvaiiii/ordering_products/shared/pkg/proto/inventory/v1";
+
+enum Category {
+    CATEGORY_UNKNOWN = 0;
+    CATEGORY_VEGETABLES = 1;
+    CATEGORY_FRUITS = 2;
+    CATEGORY_MEATS = 3;
+}
+
+message Manufacturer {
+    string name = 1;
+    string country = 2;
+    string website = 3;
+}
+
+message Product {
+    string uuid = 1;
+    string name = 2;
+    string description = 3;
+    double price = 4;
+    int64 stock_quantity = 5;
+    Category category = 6;
+    Manufacturer manufacturer = 7;
+    string created_at = 8;
+    string updated_at = 9;
+}
+
+message ProductsFilter {
+    repeated string uuids = 1;
+    repeated string names = 2;
+    repeated Category categories = 3;
+    repeated string manufacturer_countries = 4;
+}
+
+message GetProductRequest {
+    string uuid = 1;
+}
+
+message GetProductResponse {
+    Product product = 1; 
+}
+
+message ListProductsRequest {
+    ProductsFilter filter = 1;
+}
+
+message ListProductsResponse {
+    repeated Product products = 1;
+}
+
+service InventoryService {
+    rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+}
