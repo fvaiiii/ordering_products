@@ -28,7 +28,7 @@ func (r *ProductsRepo) GetProduct(ctx context.Context, productID string) (*model
 
 	product, ok := r.products[productID]
 	if !ok {
-		return nil, repo.ErrProductNotFound
+		return nil, repo.ErrNotFound
 	}
 
 	return product, nil

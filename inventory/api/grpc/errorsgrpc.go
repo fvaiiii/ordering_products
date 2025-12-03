@@ -9,7 +9,7 @@ import (
 )
 
 func toGRPCError(err error) error {
-	if errors.Is(err, repo.ErrProductNotFound) {
+	if errors.Is(err, repo.ErrNotFound) {
 		return status.Error(codes.NotFound, "product is not found")
 	}
 	return status.Error(codes.Internal, "internal server error")

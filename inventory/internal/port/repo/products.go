@@ -2,14 +2,8 @@ package repo
 
 import (
 	"context"
-	"errors"
 
 	models "github.com/fvaiiii/ordering_products/inventory/internal/models"
-)
-
-var (
-	ErrProductNotFound      = errors.New("product not found")
-	ErrProductAlreadyExists = errors.New("product already exists")
 )
 
 type Products interface {
