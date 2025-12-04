@@ -25,25 +25,25 @@ const (
 type PaymentMethod int32
 
 const (
-	PaymentMethod_PaymentMethod_UNKNOWN     PaymentMethod = 0
-	PaymentMethod_PaymentMethod_CARD        PaymentMethod = 1
-	PaymentMethod_PaymentMethod_SBP         PaymentMethod = 2
-	PaymentMethod_PaymentMethod_CREDIT_CARD PaymentMethod = 3
+	PaymentMethod_PAYMENT_METHOD_UNKNOWN     PaymentMethod = 0
+	PaymentMethod_PAYMENT_METHOD_CARD        PaymentMethod = 1
+	PaymentMethod_PAYMENT_METHOD_SBP         PaymentMethod = 2
+	PaymentMethod_PAYMENT_METHOD_CREDIT_CARD PaymentMethod = 3
 )
 
 // Enum value maps for PaymentMethod.
 var (
 	PaymentMethod_name = map[int32]string{
-		0: "PaymentMethod_UNKNOWN",
-		1: "PaymentMethod_CARD",
-		2: "PaymentMethod_SBP",
-		3: "PaymentMethod_CREDIT_CARD",
+		0: "PAYMENT_METHOD_UNKNOWN",
+		1: "PAYMENT_METHOD_CARD",
+		2: "PAYMENT_METHOD_SBP",
+		3: "PAYMENT_METHOD_CREDIT_CARD",
 	}
 	PaymentMethod_value = map[string]int32{
-		"PaymentMethod_UNKNOWN":     0,
-		"PaymentMethod_CARD":        1,
-		"PaymentMethod_SBP":         2,
-		"PaymentMethod_CREDIT_CARD": 3,
+		"PAYMENT_METHOD_UNKNOWN":     0,
+		"PAYMENT_METHOD_CARD":        1,
+		"PAYMENT_METHOD_SBP":         2,
+		"PAYMENT_METHOD_CREDIT_CARD": 3,
 	}
 )
 
@@ -74,7 +74,7 @@ func (PaymentMethod) EnumDescriptor() ([]byte, []int) {
 	return file_payment_v1_payment_proto_rawDescGZIP(), []int{0}
 }
 
-type TransactionUuidRequest struct {
+type PaymentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OrderUuid     string                 `protobuf:"bytes,1,opt,name=order_uuid,json=orderUuid,proto3" json:"order_uuid,omitempty"`
 	UserUuid      string                 `protobuf:"bytes,2,opt,name=user_uuid,json=userUuid,proto3" json:"user_uuid,omitempty"`
@@ -83,20 +83,20 @@ type TransactionUuidRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TransactionUuidRequest) Reset() {
-	*x = TransactionUuidRequest{}
+func (x *PaymentRequest) Reset() {
+	*x = PaymentRequest{}
 	mi := &file_payment_v1_payment_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TransactionUuidRequest) String() string {
+func (x *PaymentRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TransactionUuidRequest) ProtoMessage() {}
+func (*PaymentRequest) ProtoMessage() {}
 
-func (x *TransactionUuidRequest) ProtoReflect() protoreflect.Message {
+func (x *PaymentRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_payment_v1_payment_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -108,53 +108,53 @@ func (x *TransactionUuidRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TransactionUuidRequest.ProtoReflect.Descriptor instead.
-func (*TransactionUuidRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use PaymentRequest.ProtoReflect.Descriptor instead.
+func (*PaymentRequest) Descriptor() ([]byte, []int) {
 	return file_payment_v1_payment_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TransactionUuidRequest) GetOrderUuid() string {
+func (x *PaymentRequest) GetOrderUuid() string {
 	if x != nil {
 		return x.OrderUuid
 	}
 	return ""
 }
 
-func (x *TransactionUuidRequest) GetUserUuid() string {
+func (x *PaymentRequest) GetUserUuid() string {
 	if x != nil {
 		return x.UserUuid
 	}
 	return ""
 }
 
-func (x *TransactionUuidRequest) GetPaymentMethod() PaymentMethod {
+func (x *PaymentRequest) GetPaymentMethod() PaymentMethod {
 	if x != nil {
 		return x.PaymentMethod
 	}
-	return PaymentMethod_PaymentMethod_UNKNOWN
+	return PaymentMethod_PAYMENT_METHOD_UNKNOWN
 }
 
-type TransactionUuidResponse struct {
+type PaymentResponse struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	TransactionUuid string                 `protobuf:"bytes,1,opt,name=transaction_uuid,json=transactionUuid,proto3" json:"transaction_uuid,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *TransactionUuidResponse) Reset() {
-	*x = TransactionUuidResponse{}
+func (x *PaymentResponse) Reset() {
+	*x = PaymentResponse{}
 	mi := &file_payment_v1_payment_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TransactionUuidResponse) String() string {
+func (x *PaymentResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TransactionUuidResponse) ProtoMessage() {}
+func (*PaymentResponse) ProtoMessage() {}
 
-func (x *TransactionUuidResponse) ProtoReflect() protoreflect.Message {
+func (x *PaymentResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_payment_v1_payment_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -166,12 +166,12 @@ func (x *TransactionUuidResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TransactionUuidResponse.ProtoReflect.Descriptor instead.
-func (*TransactionUuidResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PaymentResponse.ProtoReflect.Descriptor instead.
+func (*PaymentResponse) Descriptor() ([]byte, []int) {
 	return file_payment_v1_payment_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *TransactionUuidResponse) GetTransactionUuid() string {
+func (x *PaymentResponse) GetTransactionUuid() string {
 	if x != nil {
 		return x.TransactionUuid
 	}
@@ -183,21 +183,21 @@ var File_payment_v1_payment_proto protoreflect.FileDescriptor
 const file_payment_v1_payment_proto_rawDesc = "" +
 	"\n" +
 	"\x18payment/v1/payment.proto\x12\n" +
-	"payment.v1\"\x96\x01\n" +
-	"\x16TransactionUuidRequest\x12\x1d\n" +
+	"payment.v1\"\x8e\x01\n" +
+	"\x0ePaymentRequest\x12\x1d\n" +
 	"\n" +
 	"order_uuid\x18\x01 \x01(\tR\torderUuid\x12\x1b\n" +
 	"\tuser_uuid\x18\x02 \x01(\tR\buserUuid\x12@\n" +
-	"\x0epayment_method\x18\x03 \x01(\x0e2\x19.payment.v1.PaymentMethodR\rpaymentMethod\"D\n" +
-	"\x17TransactionUuidResponse\x12)\n" +
-	"\x10transaction_uuid\x18\x01 \x01(\tR\x0ftransactionUuid*x\n" +
-	"\rPaymentMethod\x12\x19\n" +
-	"\x15PaymentMethod_UNKNOWN\x10\x00\x12\x16\n" +
-	"\x12PaymentMethod_CARD\x10\x01\x12\x15\n" +
-	"\x11PaymentMethod_SBP\x10\x02\x12\x1d\n" +
-	"\x19PaymentMethod_CREDIT_CARD\x10\x032e\n" +
-	"\x0ePaymentService\x12S\n" +
-	"\bPayOrder\x12\".payment.v1.TransactionUuidRequest\x1a#.payment.v1.TransactionUuidResponseBBZ@github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1b\x06proto3"
+	"\x0epayment_method\x18\x03 \x01(\x0e2\x19.payment.v1.PaymentMethodR\rpaymentMethod\"<\n" +
+	"\x0fPaymentResponse\x12)\n" +
+	"\x10transaction_uuid\x18\x01 \x01(\tR\x0ftransactionUuid*|\n" +
+	"\rPaymentMethod\x12\x1a\n" +
+	"\x16PAYMENT_METHOD_UNKNOWN\x10\x00\x12\x17\n" +
+	"\x13PAYMENT_METHOD_CARD\x10\x01\x12\x16\n" +
+	"\x12PAYMENT_METHOD_SBP\x10\x02\x12\x1e\n" +
+	"\x1aPAYMENT_METHOD_CREDIT_CARD\x10\x032U\n" +
+	"\x0ePaymentService\x12C\n" +
+	"\bPayOrder\x12\x1a.payment.v1.PaymentRequest\x1a\x1b.payment.v1.PaymentResponseBBZ@github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1b\x06proto3"
 
 var (
 	file_payment_v1_payment_proto_rawDescOnce sync.Once
@@ -214,14 +214,14 @@ func file_payment_v1_payment_proto_rawDescGZIP() []byte {
 var file_payment_v1_payment_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_payment_v1_payment_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_payment_v1_payment_proto_goTypes = []any{
-	(PaymentMethod)(0),              // 0: payment.v1.PaymentMethod
-	(*TransactionUuidRequest)(nil),  // 1: payment.v1.TransactionUuidRequest
-	(*TransactionUuidResponse)(nil), // 2: payment.v1.TransactionUuidResponse
+	(PaymentMethod)(0),      // 0: payment.v1.PaymentMethod
+	(*PaymentRequest)(nil),  // 1: payment.v1.PaymentRequest
+	(*PaymentResponse)(nil), // 2: payment.v1.PaymentResponse
 }
 var file_payment_v1_payment_proto_depIdxs = []int32{
-	0, // 0: payment.v1.TransactionUuidRequest.payment_method:type_name -> payment.v1.PaymentMethod
-	1, // 1: payment.v1.PaymentService.PayOrder:input_type -> payment.v1.TransactionUuidRequest
-	2, // 2: payment.v1.PaymentService.PayOrder:output_type -> payment.v1.TransactionUuidResponse
+	0, // 0: payment.v1.PaymentRequest.payment_method:type_name -> payment.v1.PaymentMethod
+	1, // 1: payment.v1.PaymentService.PayOrder:input_type -> payment.v1.PaymentRequest
+	2, // 2: payment.v1.PaymentService.PayOrder:output_type -> payment.v1.PaymentResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

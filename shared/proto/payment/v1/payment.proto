@@ -5,23 +5,23 @@ package payment.v1;
 option go_package = "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1";
 
 enum PaymentMethod {
-    PaymentMethod_UNKNOWN = 0;
-    PaymentMethod_CARD = 1;
-    PaymentMethod_SBP = 2;
-    PaymentMethod_CREDIT_CARD = 3;
+    PAYMENT_METHOD_UNKNOWN = 0;
+    PAYMENT_METHOD_CARD = 1;
+    PAYMENT_METHOD_SBP = 2;
+    PAYMENT_METHOD_CREDIT_CARD = 3;
 }
 
-message TransactionUuidRequest {
+message PaymentRequest {
     string order_uuid = 1;
     string user_uuid = 2;
     PaymentMethod payment_method = 3;
 }
 
-message TransactionUuidResponse {
+message PaymentResponse {
     string transaction_uuid = 1;
 }
 
 service PaymentService {
-    rpc PayOrder(TransactionUuidRequest) returns (TransactionUuidResponse);
+    rpc PayOrder(PaymentRequest) returns (PaymentResponse);
 }
 

@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PaymentServiceClient interface {
-	PayOrder(ctx context.Context, in *TransactionUuidRequest, opts ...grpc.CallOption) (*TransactionUuidResponse, error)
+	PayOrder(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error)
 }
 
 type paymentServiceClient struct {
@@ -38,9 +38,9 @@ func NewPaymentServiceClient(cc grpc.ClientConnInterface) PaymentServiceClient {
 	return &paymentServiceClient{cc}
 }
 
-func (c *paymentServiceClient) PayOrder(ctx context.Context, in *TransactionUuidRequest, opts ...grpc.CallOption) (*TransactionUuidResponse, error) {
+func (c *paymentServiceClient) PayOrder(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(TransactionUuidResponse)
+	out := new(PaymentResponse)
 	err := c.cc.Invoke(ctx, PaymentService_PayOrder_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (c *paymentServiceClient) PayOrder(ctx context.Context, in *TransactionUuid
 // All implementations must embed UnimplementedPaymentServiceServer
 // for forward compatibility.
 type PaymentServiceServer interface {
-	PayOrder(context.Context, *TransactionUuidRequest) (*TransactionUuidResponse, error)
+	PayOrder(context.Context, *PaymentRequest) (*PaymentResponse, error)
 	mustEmbedUnimplementedPaymentServiceServer()
 }
 
@@ -63,7 +63,7 @@ type PaymentServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPaymentServiceServer struct{}
 
-func (UnimplementedPaymentServiceServer) PayOrder(context.Context, *TransactionUuidRequest) (*TransactionUuidResponse, error) {
+func (UnimplementedPaymentServiceServer) PayOrder(context.Context, *PaymentRequest) (*PaymentResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method PayOrder not implemented")
 }
 func (UnimplementedPaymentServiceServer) mustEmbedUnimplementedPaymentServiceServer() {}
@@ -88,7 +88,7 @@ func RegisterPaymentServiceServer(s grpc.ServiceRegistrar, srv PaymentServiceSer
 }
 
 func _PaymentService_PayOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TransactionUuidRequest)
+	in := new(PaymentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func _PaymentService_PayOrder_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: PaymentService_PayOrder_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServiceServer).PayOrder(ctx, req.(*TransactionUuidRequest))
+		return srv.(PaymentServiceServer).PayOrder(ctx, req.(*PaymentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
