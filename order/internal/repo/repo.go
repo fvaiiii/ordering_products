@@ -9,10 +9,10 @@ import (
 )
 
 type Order interface {
-	Create(order *models.Order) error
-	GetByUUID(uuid string) (*models.Order, error)
-	Update(order *models.Order) error
-	Exists(uuid string) (bool, error)
+	Create(ctx context.Context, order *models.Order) error
+	GetByUUID(ctx context.Context, uuid string) (*models.Order, error)
+	Update(ctx context.Context, order *models.Order) error
+	Exists(ctx context.Context, uuid string) bool
 }
 
 type InventoryClient interface {
