@@ -27,7 +27,7 @@ func (c *InventoryClient) Close() error {
 	return c.conn.Close()
 }
 
-func (c *InventoryClient) GetProducts(ctx context.Context, uuids []string) ([]*inventoryv1.Product, error) {
+func (c *InventoryClient) ListParts(ctx context.Context, uuids []string) ([]*inventoryv1.Product, error) {
 	resp, err := c.client.ListProducts(ctx, &inventoryv1.ListProductsRequest{
 		Filter: &inventoryv1.ProductsFilter{Uuids: uuids},
 	})

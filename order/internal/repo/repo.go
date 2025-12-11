@@ -16,7 +16,7 @@ type Order interface {
 }
 
 type InventoryClient interface {
-	GetProducts(ctx context.Context, uuids []string) ([]*inventoryv1.Product, error)
+	ListParts(ctx context.Context, uuids []string) ([]*inventoryv1.Product, error)
 }
 
 type PaymentClient interface {
