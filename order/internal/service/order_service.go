@@ -6,7 +6,6 @@ import (
 
 	"github.com/fvaiiii/ordering_products/order/internal/clients"
 	"github.com/fvaiiii/ordering_products/order/internal/models"
-	"github.com/fvaiiii/ordering_products/order/internal/repo"
 	"github.com/fvaiiii/ordering_products/order/internal/repository"
 	paymentv1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1"
 	"github.com/google/uuid"
@@ -61,22 +60,17 @@ func (s *OrderService) CreateOrder(ctx context.Context, userUUID string, product
 	return order, nil
 }
 
-/*
-- Находит заказ по `order_uuid`. Если не существует — возвращает 404 Not Found.
-- Вызывает `PaymentService.PayOrder`, передаёт `user_uuid`, `order_uuid` и `payment_method`. Получает`transaction_uuid`.
-- Обновляет заказ: статус → `PAID`, сохраняет `transaction_uuid`, `payment_method`.
-*/
 func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMethod paymentv1.PaymentMethod) (string, error) {
 	if orderUUID == "" {
 		return "", fmt.Errorf("order_uuid is required")
 	}
 	order, err := s.repo.GetByUUID(ctx, orderUUID)
 	if err != nil {
-		return "", repo.ErrNotFound
+		return "", fmt.Errorf("order not found: %w", err)
 	}
 
 	if order.Status != models.OrderStatusPendingPayment {
-		return "", repo.ErrInvalidData
+		return "", fmt.Errorf("order cannot be paid, current status: %s", order.Status)
 	}
 
 	transactionUuid, err := s.payment.PayOrder(ctx, orderUUID, order.UserUuid, paymentMethod)
@@ -88,45 +82,36 @@ func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMe
 	order.TransactionUuid = &transactionUuid
 	order.PaymentMethod = &paymentMethod
 
-	s.repo.Update(ctx, order)
+	if err := s.repo.Update(ctx, order); err != nil {
+		return "", fmt.Errorf("failed to update order: %w", err)
+	}
 
 	return transactionUuid, nil
 
 }
 
-/*
-- Ищет заказ по UUID.
-- Если найден — возвращает.
-- Если не найден — 404 Not Found.
----
-*/
 func (s *OrderService) GetOrderByUUID(ctx context.Context, orderUUID string) (*models.Order, error) {
 	return s.repo.GetByUUID(ctx, orderUUID)
 }
 
-/*
-- Проверяет статус заказа.
-- Если `PENDING_PAYMENT` — меняет статус на `CANCELLED`.
-- Если `PAID` — возвращает ошибку 409.
-*/
 func (s *OrderService) CancelOrder(ctx context.Context, orderUUID string) error {
 	order, err := s.repo.GetByUUID(ctx, orderUUID)
 	if err != nil {
 		return fmt.Errorf("order not found: %w", err)
 	}
-	if !order.Status.IsValid() {
-		return repo.ErrInvalidData
-	}
-	if order.Status == models.OrderStatusPendingPayment {
+	switch order.Status {
+	case models.OrderStatusPendingPayment:
 		order.Status = models.OrderStatusCancelled
+		if err := s.repo.Update(ctx, order); err != nil {
+			return fmt.Errorf("failed to save: %w", err)
+		}
+		return nil
+	case models.OrderStatusPaid:
+		return fmt.Errorf("cannot cancel paid order")
+	default:
+		return fmt.Errorf("invalid order status: %s", order.Status)
+
 	}
-	if order.Status == models.OrderStatusPaid { // После сохранения проверяем?
-		return fmt.Errorf("conflict")
-	}
-	if err := s.repo.Update(ctx, order); err != nil { // ВСЕГДА сохраняем!
-		return fmt.Errorf("failed to save: %w", err)
-	}
-	return nil
 }
 
 func generateOrderUUID() string {
