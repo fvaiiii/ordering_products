@@ -7,7 +7,10 @@ import (
 	"github.com/fvaiiii/ordering_products/order/internal/clients"
 	"github.com/fvaiiii/ordering_products/order/internal/models"
 	"github.com/fvaiiii/ordering_products/order/internal/repository"
+<<<<<<< Updated upstream
 	paymentv1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1"
+=======
+>>>>>>> Stashed changes
 	"github.com/google/uuid"
 )
 
@@ -17,8 +20,21 @@ type OrderService struct {
 	payment   clients.PaymentClient
 }
 
+<<<<<<< Updated upstream
 func NewOrderService(repo repository.OrderRepo) *OrderService {
 	return &OrderService{repo: repo}
+=======
+func NewOrderService(
+	repo repository.OrderRepo,
+	inventory clients.InventoryClient,
+	payment clients.PaymentClient,
+) *OrderService {
+	return &OrderService{
+		repo:      repo,
+		inventory: inventory,
+		payment:   payment,
+	}
+>>>>>>> Stashed changes
 }
 
 func (s *OrderService) CreateOrder(ctx context.Context, userUUID string, productsUUIDs []string) (*models.Order, error) {
@@ -60,10 +76,18 @@ func (s *OrderService) CreateOrder(ctx context.Context, userUUID string, product
 	return order, nil
 }
 
+<<<<<<< Updated upstream
 func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMethod paymentv1.PaymentMethod) (string, error) {
 	if orderUUID == "" {
 		return "", fmt.Errorf("order_uuid is required")
 	}
+=======
+func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMethod models.PaymentMethod) (string, error) {
+	if orderUUID == "" {
+		return "", fmt.Errorf("order_uuid is required")
+	}
+
+>>>>>>> Stashed changes
 	order, err := s.repo.GetByUUID(ctx, orderUUID)
 	if err != nil {
 		return "", fmt.Errorf("order not found: %w", err)
@@ -78,16 +102,27 @@ func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMe
 		return "", fmt.Errorf("failed to pay order: %w", err)
 	}
 
+<<<<<<< Updated upstream
 	order.Status = models.OrderStatusPaid
 	order.TransactionUuid = &transactionUuid
 	order.PaymentMethod = &paymentMethod
+=======
+	paymentMethodStr := string(paymentMethod)
+
+	order.Status = models.OrderStatusPaid
+	order.TransactionUuid = &transactionUuid
+	order.PaymentMethod = &paymentMethodStr
+>>>>>>> Stashed changes
 
 	if err := s.repo.Update(ctx, order); err != nil {
 		return "", fmt.Errorf("failed to update order: %w", err)
 	}
 
 	return transactionUuid, nil
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }
 
 func (s *OrderService) GetOrderByUUID(ctx context.Context, orderUUID string) (*models.Order, error) {

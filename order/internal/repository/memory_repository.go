@@ -23,6 +23,7 @@ func NewOrderRepo() *OrderRepo {
 }
 
 func (r *OrderRepo) Create(ctx context.Context, order *models.Order) error {
+<<<<<<< Updated upstream
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -30,6 +31,13 @@ func (r *OrderRepo) Create(ctx context.Context, order *models.Order) error {
 		return repo.ErrInvalidData
 	}
 
+=======
+	if order == nil {
+		return repo.ErrInvalidData
+	}
+	r.mu.Lock()
+	defer r.mu.Unlock()
+>>>>>>> Stashed changes
 	if _, exists := r.orders[order.OrderUuid]; exists {
 		return repo.ErrAlreadyExists
 	}
@@ -42,21 +50,37 @@ func (r *OrderRepo) Create(ctx context.Context, order *models.Order) error {
 func (r *OrderRepo) GetByUUID(ctx context.Context, uuid string) (*models.Order, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 	order, ok := r.orders[uuid]
 	if !ok {
 		return nil, repo.ErrNotFound
 	}
 
+<<<<<<< Updated upstream
 	return order, nil
 }
 func (r *OrderRepo) Update(ctx context.Context, order *models.Order) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+=======
+	result := *order
+	return &result, nil
+}
+func (r *OrderRepo) Update(ctx context.Context, order *models.Order) error {
+>>>>>>> Stashed changes
 
 	if order == nil {
 		return repo.ErrInvalidData
 	}
+<<<<<<< Updated upstream
+=======
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+>>>>>>> Stashed changes
 	if _, exists := r.orders[order.OrderUuid]; !exists {
 		return repo.ErrNotFound
 	}
