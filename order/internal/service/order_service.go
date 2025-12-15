@@ -7,7 +7,6 @@ import (
 	"github.com/fvaiiii/ordering_products/order/internal/clients"
 	"github.com/fvaiiii/ordering_products/order/internal/models"
 	"github.com/fvaiiii/ordering_products/order/internal/repository"
-	paymentv1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1"
 	"github.com/google/uuid"
 )
 
@@ -17,8 +16,12 @@ type OrderService struct {
 	payment   clients.PaymentClient
 }
 
-func NewOrderService(repo repository.OrderRepo) *OrderService {
-	return &OrderService{repo: repo}
+func NewOrderService(repo repository.OrderRepo, inventory clients.InventoryClient, payment clients.PaymentClient) *OrderService {
+	return &OrderService{
+		repo:      repo,
+		inventory: inventory,
+		payment:   payment,
+	}
 }
 
 func (s *OrderService) CreateOrder(ctx context.Context, userUUID string, productsUUIDs []string) (*models.Order, error) {
@@ -60,7 +63,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, userUUID string, product
 	return order, nil
 }
 
-func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMethod paymentv1.PaymentMethod) (string, error) {
+func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMethod models.PaymentMethod) (string, error) {
 	if orderUUID == "" {
 		return "", fmt.Errorf("order_uuid is required")
 	}
@@ -77,10 +80,10 @@ func (s *OrderService) PayOrder(ctx context.Context, orderUUID string, paymentMe
 	if err != nil {
 		return "", fmt.Errorf("failed to pay order: %w", err)
 	}
-
+	paymentMethodStr := string(paymentMethod)
 	order.Status = models.OrderStatusPaid
 	order.TransactionUuid = &transactionUuid
-	order.PaymentMethod = &paymentMethod
+	order.PaymentMethod = &paymentMethodStr
 
 	if err := s.repo.Update(ctx, order); err != nil {
 		return "", fmt.Errorf("failed to update order: %w", err)

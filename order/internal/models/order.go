@@ -1,14 +1,12 @@
 package models
 
-import v1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1"
-
 type Order struct {
 	OrderUuid       string
 	UserUuid        string
 	ProductUuids    []string
 	TotalPrice      float64
 	TransactionUuid *string
-	PaymentMethod   *v1.PaymentMethod
+	PaymentMethod   *string
 	Status          OrderStatus
 }
 

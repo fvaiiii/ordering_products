@@ -23,13 +23,12 @@ func NewOrderRepo() *OrderRepo {
 }
 
 func (r *OrderRepo) Create(ctx context.Context, order *models.Order) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
 
 	if order == nil {
 		return repo.ErrInvalidData
 	}
-
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	if _, exists := r.orders[order.OrderUuid]; exists {
 		return repo.ErrAlreadyExists
 	}
@@ -51,12 +50,12 @@ func (r *OrderRepo) GetByUUID(ctx context.Context, uuid string) (*models.Order, 
 	return order, nil
 }
 func (r *OrderRepo) Update(ctx context.Context, order *models.Order) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
 
 	if order == nil {
 		return repo.ErrInvalidData
 	}
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	if _, exists := r.orders[order.OrderUuid]; !exists {
 		return repo.ErrNotFound
 	}

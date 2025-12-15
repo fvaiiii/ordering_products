@@ -11,10 +11,10 @@ import (
 )
 
 type OrderHandler struct {
-	service *service.OrderService
+	service service.OrderService
 }
 
-func NewOrderService(s *service.OrderService) *OrderHandler {
+func NewOrderHandler(s service.OrderService) *OrderHandler {
 	return &OrderHandler{service: s}
 }
 
@@ -22,9 +22,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var req dto.CreateOrderRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -32,13 +30,13 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	if err != nil {
 		errMsg := err.Error()
 		switch {
-		case strings.Contains(errMsg, "user_uuid is required") || strings.Contains(errMsg, "at least one product is required"):
+		case strings.Contains(errMsg, "user_uuid is required") ||
+			strings.Contains(errMsg, "at least one product is required"):
 			c.JSON(http.StatusBadRequest, gin.H{"error": errMsg})
-
 		case strings.Contains(errMsg, "some products are not exist"):
-			c.JSON(http.StatusNotFound, gin.H{"error": errMsg})
+			c.JSON(http.StatusBadRequest, gin.H{"error": errMsg})
 		default:
-			c.JSON(http.StatusInternalServerError, gin.H{"error": errMsg})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		}
 		return
 	}
@@ -48,111 +46,107 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		TotalPrice: order.TotalPrice,
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusCreated, resp)
 }
 
 func (h *OrderHandler) PayOrder(c *gin.Context) {
-	orderUuid := c.Param("order_uuid")
-	if orderUuid == "" {
+	orderUUID := c.Param("order_uuid")
+	if orderUUID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "order_uuid is required"})
 		return
 	}
 
-	var req dto.CreatePaymentRequest
-
+	var req dto.PayOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	transactionUuid, err := h.service.PayOrder(
-		c.Request.Context(),
-		orderUuid,
-		models.PaymentMethod(req.PaymentMethod),
-	)
+	var paymentMethod models.PaymentMethod
+	switch strings.ToUpper(req.PaymentMethod) {
+	case "CARD":
+		paymentMethod = models.PaymentMethodCard
+	case "SBP":
+		paymentMethod = models.PaymentMethodSBP
+	case "CREDIT_CARD":
+		paymentMethod = models.PaymentMethodCreditCard
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payment method"})
+		return
+	}
+
+	transactionUUID, err := h.service.PayOrder(c.Request.Context(), orderUUID, paymentMethod)
 	if err != nil {
 		errMsg := err.Error()
 		switch {
 		case strings.Contains(errMsg, "order not found"):
 			c.JSON(http.StatusNotFound, gin.H{"error": errMsg})
 		case strings.Contains(errMsg, "order cannot be paid"):
-			c.JSON(http.StatusConflict, gin.H{"error": errMsg})
+			c.JSON(http.StatusBadRequest, gin.H{"error": errMsg})
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		}
 		return
 	}
 
-	resp := dto.CreatePaymentResponse{
-		TransactionUuid: transactionUuid,
+	resp := dto.PayOrderResponse{
+		TransactionUUID: transactionUUID,
 	}
-
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *OrderHandler) GetByUUID(c *gin.Context) {
-	orderUuid := c.Param("order_uuid")
-	if orderUuid == "" {
+func (h *OrderHandler) GetOrder(c *gin.Context) {
+	orderUUID := c.Param("order_uuid")
+	if orderUUID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "order_uuid is required"})
 		return
 	}
 
-	order, err := h.service.GetOrderByUUID(c.Request.Context(), orderUuid)
+	order, err := h.service.GetOrderByUUID(c.Request.Context(), orderUUID)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "order not found",
-			})
+			c.JSON(http.StatusNotFound, gin.H{"error": "order not found"})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "internal server error",
-			})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		}
 		return
-
 	}
 
-	resp := dto.GetPaymentRequestResponse{
-		OrderUuid:    order.OrderUuid,
-		UserUuid:     order.UserUuid,
-		ProductUuids: order.ProductUuids,
+	resp := dto.GetOrderResponse{
+		OrderUUID:    order.OrderUuid,
+		UserUUID:     order.UserUuid,
+		ProductUUIDs: order.ProductUuids,
 		TotalPrice:   order.TotalPrice,
 		Status:       string(order.Status),
 	}
 
 	if order.TransactionUuid != nil {
-		resp.TransactionUuid = *order.TransactionUuid
+		resp.TransactionUUID = *order.TransactionUuid
 	}
 	if order.PaymentMethod != nil {
 		resp.PaymentMethod = *order.PaymentMethod
 	}
+
 	c.JSON(http.StatusOK, resp)
 }
 
 func (h *OrderHandler) CancelOrder(c *gin.Context) {
-	orderUuid := c.Param("order_uuid")
-	if orderUuid == "" {
+	orderUUID := c.Param("order_uuid")
+	if orderUUID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "order_uuid is required"})
 		return
 	}
 
-	err := h.service.CancelOrder(c.Request.Context(), orderUuid)
+	err := h.service.CancelOrder(c.Request.Context(), orderUUID)
 	if err != nil {
 		errMsg := err.Error()
 		switch {
 		case strings.Contains(errMsg, "order not found"):
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "order not found",
-			})
+			c.JSON(http.StatusNotFound, gin.H{"error": "order not found"})
 		case strings.Contains(errMsg, "cannot cancel paid order"):
-			c.JSON(http.StatusConflict, gin.H{
-				"error": "the order has been paid and cannot be cancelled",
-			})
+			c.JSON(http.StatusConflict, gin.H{"error": "cannot cancel paid order"})
 		default:
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "internal server error",
-			})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		}
 		return
 	}

@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/fvaiiii/ordering_products/order/internal/models"
-	inventoryv1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/inventory/v1"
-	paymentv1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/payment/v1"
 )
 
 type Order interface {
@@ -16,9 +14,11 @@ type Order interface {
 }
 
 type InventoryClient interface {
-	ListParts(ctx context.Context, uuids []string) ([]*inventoryv1.Product, error)
+	ListParts(ctx context.Context, uuids []string) ([]*models.Product, error)
+	Close() error
 }
 
 type PaymentClient interface {
-	PayOrder(ctx context.Context, orderUUID, userUUID string, paymentMethod paymentv1.PaymentMethod) (string, error)
+	PayOrder(ctx context.Context, orderUUID, userUUID string, paymentMethod models.PaymentMethod) (string, error)
+	Close() error
 }
