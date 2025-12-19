@@ -16,8 +16,8 @@ type OrderService struct {
 	payment   clients.PaymentClient
 }
 
-func NewOrderService(repo repository.OrderRepo, inventory clients.InventoryClient, payment clients.PaymentClient) *OrderService {
-	return &OrderService{
+func NewOrderService(repo repository.OrderRepo, inventory clients.InventoryClient, payment clients.PaymentClient) OrderService {
+	return OrderService{
 		repo:      repo,
 		inventory: inventory,
 		payment:   payment,

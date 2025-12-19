@@ -17,8 +17,8 @@ type PaymentClient struct {
 	client paymentv1.PaymentServiceClient
 }
 
-func NewPaymentClient(conn *grpc.ClientConn) *PaymentClient {
-	return &PaymentClient{
+func NewPaymentClient(conn *grpc.ClientConn) PaymentClient {
+	return PaymentClient{
 		conn:   conn,
 		client: paymentv1.NewPaymentServiceClient(conn),
 	}

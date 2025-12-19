@@ -15,8 +15,8 @@ type OrderRepo struct {
 	mu     *sync.RWMutex
 }
 
-func NewOrderRepo() *OrderRepo {
-	return &OrderRepo{
+func NewOrderRepo() OrderRepo {
+	return OrderRepo{
 		orders: make(map[string]*models.Order),
 		mu:     new(sync.RWMutex),
 	}
