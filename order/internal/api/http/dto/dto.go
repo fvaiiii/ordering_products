@@ -2,7 +2,7 @@ package dto
 
 type CreateOrderRequest struct {
 	UserUuid     string   `json:"user_uuid" binding:"required"`
-	ProductUuids []string `json:"products_uuids" binding:"required,min=1"`
+	ProductUuids []string `json:"products_uuids" binding:"required"`
 }
 
 type PayOrderRequest struct {

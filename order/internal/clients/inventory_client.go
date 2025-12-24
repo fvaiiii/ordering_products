@@ -3,6 +3,7 @@ package clients
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/fvaiiii/ordering_products/order/internal/models"
 	"github.com/fvaiiii/ordering_products/order/internal/repo"
@@ -29,12 +30,18 @@ func (c *InventoryClient) Close() error {
 }
 
 func (c *InventoryClient) ListParts(ctx context.Context, uuids []string) ([]*models.Product, error) {
+
+	log.Printf("[InventoryClient] I am requesting products: %v", uuids)
+
 	resp, err := c.client.ListProducts(ctx, &inventoryv1.ListProductsRequest{
 		Filter: &inventoryv1.ProductsFilter{Uuids: uuids},
 	})
 	if err != nil {
+		log.Printf("[InventoryClient] error from InventoryService: %v", err)
 		return nil, fmt.Errorf("failed to get products from inventory: %w", err)
 	}
+
+	log.Printf("[InventoryClient] %d products received", len(resp.Products))
 
 	if len(resp.Products) != len(uuids) {
 		return nil, fmt.Errorf("some products not found: expected %d, got %d", len(uuids), len(resp.Products))

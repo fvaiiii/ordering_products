@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"log"
 
 	"github.com/fvaiiii/ordering_products/inventory/internal/service"
 	v1 "github.com/fvaiiii/ordering_products/shared/pkg/proto/inventory/v1"
@@ -36,6 +37,8 @@ func (s *Server) GetProduct(ctx context.Context, req *v1.GetProductRequest) (*v1
 }
 
 func (s *Server) ListProducts(ctx context.Context, req *v1.ListProductsRequest) (*v1.ListProductsResponse, error) {
+	log.Printf("[gRPC Server] ListProducts called, filter: %v", req.GetFilter())
+
 	products, err := s.service.ListProducts(ctx, filterFromProto(req.GetFilter()))
 	if err != nil {
 		return nil, toGRPCError(err)

@@ -20,6 +20,9 @@ func domainArrToProto(products []*models.Product) []*v1.Product {
 }
 
 func filterFromProto(filter *v1.ProductsFilter) models.ProductsFilter {
+	if filter == nil {
+		return models.ProductsFilter{}
+	}
 	return models.ProductsFilter{
 		Uuids:                 filter.Uuids,
 		Names:                 filter.Names,
@@ -29,7 +32,11 @@ func filterFromProto(filter *v1.ProductsFilter) models.ProductsFilter {
 }
 
 func categoryFromProto(categoriesFilter []v1.Category) []models.Category {
-	arr := make([]models.Category, 0)
+	if categoriesFilter == nil {
+		return nil
+	}
+
+	arr := make([]models.Category, 0, len(categoriesFilter))
 	for _, categoryFilter := range categoriesFilter {
 		switch categoryFilter {
 		case v1.Category_CATEGORY_VEGETABLES:

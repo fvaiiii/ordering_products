@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -21,10 +22,14 @@ func NewOrderHandler(s service.OrderService) *OrderHandler {
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var req dto.CreateOrderRequest
 
+	log.Printf("[Handler] CreateOrder called with: %v", req)
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("[Handler] JSON parse error: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Printf("[Handler] Calling service.CreateOrder: user=%s, products=%v", req.UserUuid, req.ProductUuids)
 
 	order, err := h.service.CreateOrder(c.Request.Context(), req.UserUuid, req.ProductUuids)
 	if err != nil {
