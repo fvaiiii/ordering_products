@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	models "github.com/fvaiiii/ordering_products/inventory/internal/models"
@@ -11,22 +12,38 @@ import (
 var _ repo.Products = (*ProductsRepo)(nil)
 
 type ProductsRepo struct {
-	products map[string]*models.Product
+	Products map[string]*models.Product
 	mu       *sync.RWMutex
 }
 
 func NewProductsRepo() *ProductsRepo {
 	return &ProductsRepo{
-		products: make(map[string]*models.Product),
+		Products: make(map[string]*models.Product),
 		mu:       new(sync.RWMutex),
 	}
+}
+
+func (r *ProductsRepo) AddProduct(product *models.Product) error {
+	if product == nil || product.Uuid == "" {
+		return errors.New("invalid product")
+	}
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if _, exists := r.Products[product.Uuid]; exists {
+		return errors.New("product already exists: " + product.Uuid)
+	}
+
+	r.Products[product.Uuid] = product
+	return nil
 }
 
 func (r *ProductsRepo) GetProduct(ctx context.Context, productID string) (*models.Product, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	product, ok := r.products[productID]
+	product, ok := r.Products[productID]
 	if !ok {
 		return nil, repo.ErrNotFound
 	}
@@ -39,7 +56,7 @@ func (r *ProductsRepo) ListProducts(ctx context.Context, filter models.ProductsF
 	defer r.mu.RUnlock()
 
 	res := make([]*models.Product, 0)
-	for _, product := range r.products {
+	for _, product := range r.Products {
 		if matchesFilter(product, filter) {
 			res = append(res, product)
 		}
