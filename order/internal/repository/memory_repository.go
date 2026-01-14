@@ -8,15 +8,15 @@ import (
 	"github.com/fvaiiii/ordering_products/order/internal/repo"
 )
 
-var _ = (*repo.Order)(nil)
+var _ repo.Order = (*OrderRepo)(nil)
 
 type OrderRepo struct {
 	orders map[string]*models.Order
 	mu     *sync.RWMutex
 }
 
-func NewOrderRepo() OrderRepo {
-	return OrderRepo{
+func NewOrderRepo() repo.Order {
+	return &OrderRepo{
 		orders: make(map[string]*models.Order),
 		mu:     new(sync.RWMutex),
 	}

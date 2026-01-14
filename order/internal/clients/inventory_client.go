@@ -11,15 +11,15 @@ import (
 	"google.golang.org/grpc"
 )
 
-var _ = (*repo.InventoryClient)(nil)
+var _ repo.InventoryClient = (*InventoryClient)(nil)
 
 type InventoryClient struct {
 	conn   *grpc.ClientConn
 	client inventoryv1.InventoryServiceClient
 }
 
-func NewInventoryClient(conn *grpc.ClientConn) InventoryClient {
-	return InventoryClient{
+func NewInventoryClient(conn *grpc.ClientConn) repo.InventoryClient {
+	return &InventoryClient{
 		conn:   conn,
 		client: inventoryv1.NewInventoryServiceClient(conn),
 	}

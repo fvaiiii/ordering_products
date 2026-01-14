@@ -3,6 +3,7 @@ module github.com/fvaiiii/ordering_products/payment
 go 1.24.0
 
 require (
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/fvaiiii/ordering_products/shared v0.0.0-20260105091916-d11580ef40d9
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.11.1

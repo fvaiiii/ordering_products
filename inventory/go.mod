@@ -3,13 +3,13 @@ module github.com/fvaiiii/ordering_products/inventory
 go 1.24.0
 
 require (
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/fvaiiii/ordering_products/shared v0.0.0-20251203203611-f224154c7ac2
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/grpc v1.77.0
 )
 
 require (
-	github.com/brianvoe/gofakeit v3.18.0+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
