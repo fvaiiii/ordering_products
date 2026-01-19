@@ -10,15 +10,15 @@ import (
 	"google.golang.org/grpc"
 )
 
-var _ = (*repo.PaymentClient)(nil)
+var _ repo.PaymentClient = (*PaymentClient)(nil)
 
 type PaymentClient struct {
 	conn   *grpc.ClientConn
 	client paymentv1.PaymentServiceClient
 }
 
-func NewPaymentClient(conn *grpc.ClientConn) PaymentClient {
-	return PaymentClient{
+func NewPaymentClient(conn *grpc.ClientConn) repo.PaymentClient {
+	return &PaymentClient{
 		conn:   conn,
 		client: paymentv1.NewPaymentServiceClient(conn),
 	}

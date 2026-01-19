@@ -6,9 +6,8 @@ import (
 	"os"
 	"time"
 
-	// Импортируем твои пакеты с алиасами
-	httprouter "github.com/fvaiiii/ordering_products/order/internal/api/http" // ← РОУТЕР
-	"github.com/fvaiiii/ordering_products/order/internal/api/http/handlers"   // ← HANDLERS
+	httprouter "github.com/fvaiiii/ordering_products/order/internal/api/http"
+	"github.com/fvaiiii/ordering_products/order/internal/api/http/handlers"
 	"github.com/fvaiiii/ordering_products/order/internal/clients"
 	"github.com/fvaiiii/ordering_products/order/internal/repository"
 	"github.com/fvaiiii/ordering_products/order/internal/service"

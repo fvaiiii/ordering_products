@@ -4,19 +4,18 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fvaiiii/ordering_products/order/internal/clients"
 	"github.com/fvaiiii/ordering_products/order/internal/models"
-	"github.com/fvaiiii/ordering_products/order/internal/repository"
+	"github.com/fvaiiii/ordering_products/order/internal/repo"
 	"github.com/google/uuid"
 )
 
 type OrderService struct {
-	repo      repository.OrderRepo
-	inventory clients.InventoryClient
-	payment   clients.PaymentClient
+	repo      repo.Order
+	inventory repo.InventoryClient
+	payment   repo.PaymentClient
 }
 
-func NewOrderService(repo repository.OrderRepo, inventory clients.InventoryClient, payment clients.PaymentClient) OrderService {
+func NewOrderService(repo repo.Order, inventory repo.InventoryClient, payment repo.PaymentClient) OrderService {
 	return OrderService{
 		repo:      repo,
 		inventory: inventory,
