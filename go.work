@@ -1,8 +1,9 @@
 go 1.24.0
 
 use (
-./inventory
-./order
-./payment
-./shared
+	./inventory
+	./order
+	./payment
+	./pkg/migrator
+	./shared
 )
