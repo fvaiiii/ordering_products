@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/fvaiiii/ordering_products/pkg/migrator v0.0.0-20260122132344-bf5e1150a2ba
 	github.com/fvaiiii/ordering_products/shared v0.0.0-20260105091916-d11580ef40d9
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
@@ -35,7 +36,9 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pressly/goose v2.7.0+incompatible // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
 	github.com/quic-go/quic-go v0.54.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect

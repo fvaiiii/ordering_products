@@ -5,12 +5,15 @@ go 1.24.0
 require (
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/fvaiiii/ordering_products/shared v0.0.0-20251203203611-f224154c7ac2
+	github.com/redis/go-redis/v9 v9.17.3
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/grpc v1.77.0
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	golang.org/x/net v0.46.1-0.20251013234738-63d1a5100f82 // indirect

@@ -37,7 +37,7 @@ func (r *OrderRepository) Create(ctx context.Context, order *models.Order) error
 		order.UserUuid,
 		productUUIDsJSON,
 		order.TotalPrice,
-		order, order.TransactionUuid,
+		order.TransactionUuid,
 		order.PaymentMethod,
 		order.Status,
 	)
@@ -101,7 +101,7 @@ func (r *OrderRepository) Update(ctx context.Context, order *models.Order) error
 		order.UserUuid,
 		productUUIDsJSON,
 		order.TotalPrice,
-		order, order.TransactionUuid,
+		order.TransactionUuid,
 		order.PaymentMethod,
 		order.Status,
 	)
