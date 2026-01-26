@@ -25,7 +25,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	log.Printf("[Handler] CreateOrder called with: %v", req)
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Printf("[Handler] JSON parse error: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request format"})
 		return
 	}
 
@@ -33,6 +33,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 
 	order, err := h.service.CreateOrder(c.Request.Context(), req.UserUuid, req.ProductUuids)
 	if err != nil {
+		log.Printf("[Handler] CreateOrder service error: %v", err)
 		errMsg := err.Error()
 		switch {
 		case strings.Contains(errMsg, "user_uuid is required") ||
@@ -41,6 +42,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		case strings.Contains(errMsg, "some products are not exist"):
 			c.JSON(http.StatusBadRequest, gin.H{"error": errMsg})
 		default:
+			log.Printf("[Handler] Unexpected error in CreateOrder: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		}
 		return

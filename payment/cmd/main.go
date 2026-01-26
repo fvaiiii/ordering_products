@@ -17,8 +17,8 @@ func main() {
 	grpcServer := grpc.NewServer()
 	v1.RegisterPaymentServiceServer(grpcServer, handler)
 
-	lis, _ := net.Listen("tcp", ":50052")
-	log.Printf("Starting PaymentService on :50052")
+	lis, _ := net.Listen("tcp", ":50053")
+	log.Printf("Starting PaymentService on :50053")
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatal(err)

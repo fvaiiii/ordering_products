@@ -54,9 +54,10 @@ func main() {
 	repo := repository.NewOrderRepository(pool)
 	logger.Println("Connecting to InventoryService...")
 	inventoryConn, err := grpc.NewClient(
-		"localhost:50051",
+		"localhost:50052",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
+
 	if err != nil {
 		logger.Fatal("Failed to connect to InventoryService:", err)
 	}
@@ -64,7 +65,7 @@ func main() {
 
 	logger.Println("Connecting to PaymentService...")
 	paymentConn, err := grpc.NewClient(
-		"localhost:50052",
+		"localhost:50053",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
